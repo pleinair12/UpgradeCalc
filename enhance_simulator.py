@@ -74,7 +74,7 @@ st.sidebar.header("시뮬레이션 설정")
 start_level = st.sidebar.number_input("시작 강화 수치", min_value=0, max_value=29, value=0)
 default_end = max(start_level + 1, 25)
 end_level = st.sidebar.number_input("목표 강화 수치", min_value=start_level + 1, max_value=30, value=default_end)
-simulations = st.sidebar.number_input("시뮬레이션 반복 횟수"+\n+"(최대 1만, 권장 1천)", min_value=1, max_value=10000, value=1000)
+simulations = st.sidebar.number_input("시뮬레이션 반복 횟수(최대 1만, 권장 1천)", min_value=1, max_value=10000, value=1000)
 
 if st.sidebar.button("강화 시뮬레이션 시작"):
     with st.spinner("시뮬레이션 중..."):
