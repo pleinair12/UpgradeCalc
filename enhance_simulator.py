@@ -40,11 +40,13 @@ def get_peso_cost(level):
     else:
         return 0
 
+
 def simulate_enhance(start_level, end_level):
     peso_total = 0
     crystal_total = 0
 
-    for level in range(start_level, end_level):
+    level = start_level
+    while level < end_level:
         success_rate, fail_exp = enhance_data[level]
         current_rate = success_rate
 
@@ -54,12 +56,22 @@ def simulate_enhance(start_level, end_level):
                 crystal_total += 250
 
             if random.random() * 100 < current_rate:
+                # 성공 시 다음 강화 단계로
+                level += 1
                 break
             else:
-                if fail_exp > 0:
-                    current_rate = min(current_rate + fail_exp, 100.0)
+                # 실패 시 처리
+                if level >= 25:
+                    # 25강 이상 실패 시 25강으로 강제 리셋
+                    level = 25
+                    break
+                else:
+                    # 25강 미만은 실패 경험치 누적
+                    if fail_exp > 0:
+                        current_rate = min(current_rate + fail_exp, 100.0)
 
     return peso_total, crystal_total
+
 
 # Streamlit UI
 st.sidebar.header("시뮬레이션 설정")
