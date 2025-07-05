@@ -92,7 +92,7 @@ if st.sidebar.button("강화 시뮬레이션 시작"):
         avg_crystal = total_crystal / simulations
         avg_tries = total_tries / simulations
 
-        st.success(f"💡 {start_level}강 → {end_level}강 시뮬레이션 결과 (평균값)")
+        st.success(f" {start_level}강 → {end_level}강 시뮬레이션 결과 (평균값)")
         st.metric("평균 페소 소모량", f"{avg_peso:,.0f} 페소")
         st.metric("평균 차원조각 소모량", f"{avg_crystal:,.0f} 개")
         st.metric("평균 강화 시도 횟수", f"{avg_tries:,.0f} 회")
