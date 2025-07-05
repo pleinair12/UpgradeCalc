@@ -64,7 +64,10 @@ def simulate_enhance(start_level, end_level):
 # Streamlit UI
 st.sidebar.header("시뮬레이션 설정")
 start_level = st.sidebar.number_input("시작 강화 수치", min_value=0, max_value=29, value=10)
-end_level = st.sidebar.number_input("목표 강화 수치", min_value=start_level+1, max_value=30, value=20)
+
+# end_level의 기본값은 start_level+1 이상이어야 하므로 동적으로 설정
+default_end = max(start_level + 1, 20)
+end_level = st.sidebar.number_input("목표 강화 수치", min_value=start_level + 1, max_value=30, value=default_end)
 simulations = st.sidebar.number_input("시뮬레이션 반복 횟수", min_value=1, max_value=10000, value=1000)
 
 if st.sidebar.button("강화 시뮬레이션 시작"):
