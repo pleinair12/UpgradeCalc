@@ -9,7 +9,7 @@ st.markdown("시뮬횟수는 1~10000회로 테스트 하려면 1회로 하고, �
 st.markdown("(강화횟수많은 30강은 로딩있을 수 있음)")
 
 # 강화 데이터
-enhance_data = {
+base_enhance_data = {
     0: (50.0, 100.0), 1: (50.0, 100.0), 2: (50.0, 100.0), 3: (50.0, 100.0), 4: (50.0, 100.0),
     5: (20.0, 80.0), 6: (20.0, 80.0), 7: (20.0, 80.0), 8: (20.0, 80.0), 9: (20.0, 80.0),
     10: (10.0, 60.0), 11: (10.0, 60.0), 12: (10.0, 60.0), 13: (10.0, 60.0), 14: (10.0, 60.0),
@@ -42,7 +42,7 @@ def get_peso_cost(level):
     else:
         return 0
 
-def simulate_enhance(start_level, end_level):
+def simulate_enhance(start_level, end_level, enhance_data):
     peso_total = 0
     crystal_total = 0
     total_tries = 0
@@ -78,6 +78,15 @@ default_end = max(start_level + 1, 25)
 end_level = st.sidebar.number_input("목표 강화 수치", min_value=start_level + 1, max_value=30, value=default_end)
 simulations = st.sidebar.number_input("시뮬레이션 반복 횟수", min_value=1, max_value=10000, value=1000)
 
+# ✔ 피시방 버프 체크박스 추가
+pcbang = st.sidebar.checkbox("피시방 버프 적용 (25강~29강 성공률 38%)")
+
+# 선택에 따라 확률 데이터 변경
+enhance_data = base_enhance_data.copy()
+if pcbang:
+    for lvl in range(25, 30):
+        enhance_data[lvl] = (38.0, 0.0)  # 성공률 38%, 실패 시 증가량 없음
+
 if st.sidebar.button("강화 시뮬레이션 시작"):
     with st.spinner("시뮬레이션 중..."):
         total_peso = 0
@@ -85,7 +94,7 @@ if st.sidebar.button("강화 시뮬레이션 시작"):
         total_tries = 0
 
         for _ in range(simulations):
-            peso, crystal, tries = simulate_enhance(start_level, end_level)
+            peso, crystal, tries = simulate_enhance(start_level, end_level, enhance_data)
             total_peso += peso
             total_crystal += crystal
             total_tries += tries
@@ -94,9 +103,10 @@ if st.sidebar.button("강화 시뮬레이션 시작"):
         avg_crystal = total_crystal / simulations
         avg_tries = total_tries / simulations
 
-        st.success(f" {start_level}강 → {end_level}강 시뮬레이션 결과 (평균값)")
+        st.success(f"{start_level}강 → {end_level}강 시뮬레이션 결과 (평균값)")
         st.metric("평균 페소 소모량", f"{avg_peso:,.0f} 페소")
         st.metric("평균 차원조각 소모량", f"{avg_crystal:,.0f} 개")
         st.metric("평균 강화 시도 횟수", f"{avg_tries:,.0f} 회")
 
-        st.caption(f"{simulations:,}회의 시뮬레이션을 기준으로 한 평균값입니다.")
+        buff_text = "피시방 버프 적용됨 (25~29강 38%)" if pcbang else "기본 확률 적용"
+        st.caption(f"{simulations:,}회의 시뮬레이션 기반 평균값입니다.  • {buff_text}")
